@@ -13,7 +13,8 @@
    },
    "manifest_version": 2,
    "name": "Autotask - Only with tabs.",
-   "short_name": "AutotaskTabs",
+   "short_name": "Tabbed-Autotask",
+   "homepage_url": "https://github.com/Invertee/Tabbed-Autotask",
    "permissions": [ "tabs", "webNavigation", "contentSettings", "https://*.autotask.net/*"],
    "version": "0.1"
 }
