@@ -22,15 +22,15 @@ var preURL = []
 for (var i = 0; i < 3; i++) {
 	preURL.push('https://ww4.autotask.net')
 }
-chrome.tabs.onActivated.addListener(function(w){
+chrome.tabs.onActivated.addListener(function(t){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) 
 	{
 		preURL.push( tabs[0].url )
 		if (preURL.length > 3) { preURL.shift() }
-		console.log(preURL)
 	});	
 });
 
+var urlString = 'https://ww4.autotask.net'
 // Moves popup to end of window. 
 chrome.windows.getCurrent({},function(w){
 	var mainwindow = w.id;
@@ -41,7 +41,7 @@ chrome.windows.getCurrent({},function(w){
 					active: true,
 					windowId: w.id
 				}, function (tabs) {
-					if (preURL[1].startsWith('https://ww4.autotask.net')){
+					if (preURL[0].startsWith(urlString) || preURL[1].startsWith(urlString) || preURL[2].startsWith(urlString)) {
 						chrome.tabs.move(w.tabs[0].id,{windowId:mainwindow,index:-1},function(){
 						chrome.tabs.update(w.tabs[0].id,{active:true});
 						});
@@ -51,4 +51,3 @@ chrome.windows.getCurrent({},function(w){
 		}
 	});
 });
-
