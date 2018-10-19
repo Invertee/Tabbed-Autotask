@@ -18,22 +18,32 @@ addPopup()
 
 // Gets last tab
 var preURL = []
+var preInd = []
+var prewID = []
 // Pushes url to array to make sure it works off the bat ;)
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < 6; i++) {
 	preURL.push('https://ww4.autotask.net')
+	preInd.push('-1')
+	prewID.push('')
 }
+
 chrome.tabs.onActivated.addListener(function(t){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) 
 	{
 		preURL.push( tabs[0].url )
-		if (preURL.length > 3) { preURL.shift() }
+		if (preURL.length > 6) { preURL.shift() }
+		//console.log(preURL)
+		preInd.push( tabs[0].index )
+		if (preInd.length > 6) { preInd.shift() }
+		//console.log(preInd)
+		prewID.push( tabs[0].windowId )
+		if (prewID.length > 6) { prewID.shift() }
+		//console.log(prewID)
 	});	
 });
 
 var urlString = 'https://ww4.autotask.net'
 // Moves popup to end of window. 
-chrome.windows.getCurrent({},function(w){
-	var mainwindow = w.id;
 	chrome.windows.onCreated.addListener(function(w){
 		if(w.type == "popup" ){
 			chrome.windows.get(w.id,{populate:true},function(w){
@@ -41,8 +51,8 @@ chrome.windows.getCurrent({},function(w){
 					active: true,
 					windowId: w.id
 				}, function (tabs) {
-					if (preURL[0].startsWith(urlString) || preURL[1].startsWith(urlString) || preURL[2].startsWith(urlString)) {
-						chrome.tabs.move(w.tabs[0].id,{windowId:mainwindow,index:-1},function(){
+					if (preURL[0].startsWith(urlString) || preURL[1].startsWith(urlString) || preURL[2].startsWith(urlString) || preURL[3].startsWith(urlString) || preURL[4].startsWith(urlString) || preURL[5].startsWith(urlString)) {
+						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)},function(){
 						chrome.tabs.update(w.tabs[0].id,{active:true});
 						});
 					}
@@ -50,4 +60,4 @@ chrome.windows.getCurrent({},function(w){
 			});
 		}
 	});
-});
+
