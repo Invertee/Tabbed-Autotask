@@ -4,6 +4,7 @@
      },
    "browser_action": {
       "default_icon": "icon128.png",
+      "default_popup": "popup.html",
       "default_title": "Autotask - Only with tabs."
    },
    "description": "Forces Chrome to open new tabs instead of endless popup windows in Autotask",
@@ -15,6 +16,6 @@
    "name": "Autotask - Only with tabs.",
    "short_name": "Tabbed-Autotask",
    "homepage_url": "https://github.com/Invertee/Tabbed-Autotask",
-   "permissions": [ "tabs", "webNavigation", "contentSettings", "https://*.autotask.net/*"],
+   "permissions": [ "tabs", "webNavigation", "contentSettings", "https://*.autotask.net/*", "storage"],
    "version": "0.4"
 }

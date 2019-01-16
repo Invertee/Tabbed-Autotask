@@ -25,7 +25,7 @@ for (var i = 0; i < 6; i++) {
 	preURL.push('https://ww4.autotask.net')
 	preInd.push('-1')
 	prewID.push('')
-}
+};
 
 chrome.tabs.onActivated.addListener(function(t){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) 
@@ -35,7 +35,7 @@ chrome.tabs.onActivated.addListener(function(t){
 		//console.log(preURL)
 		preInd.push( tabs[0].index )
 		if (preInd.length > 6) { preInd.shift() }
-		//console.log(preInd)
+		console.log(preInd)
 		prewID.push( tabs[0].windowId )
 		if (prewID.length > 6) { prewID.shift() }
 		//console.log(prewID)
@@ -52,9 +52,15 @@ var urlString = 'https://ww4.autotask.net'
 					windowId: w.id
 				}, function (tabs) {
 					if (preURL[0].startsWith(urlString) || preURL[1].startsWith(urlString) || preURL[2].startsWith(urlString) || preURL[3].startsWith(urlString) || preURL[4].startsWith(urlString) || preURL[5].startsWith(urlString)) {
+						if (localStorage.nextTab == 'true') {
 						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)},function(){
-						chrome.tabs.update(w.tabs[0].id,{active:true});
+							chrome.tabs.update(w.tabs[0].id,{active:true});
 						});
+					} else {
+						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:-1},function(){
+							chrome.tabs.update(w.tabs[0].id,{active:true});
+						});
+					};
 					}
 				});
 			});

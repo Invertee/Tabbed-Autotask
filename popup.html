@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Autotask - Only with Tabs</title>
+    <style type="text/css">
+    body {
+        background: red;
+        color: white;
+        max-width: 250px;
+        min-width: 250px;
+        font-size: 12px;
+    }
+    </style>
+
+    <script src="popup.js"></script>
+    
+</head>
+<body>
+    <h3>Options:</h3>
+    <p>
+    <label>
+        <input type="checkbox" id="opt_cur" checked>
+        Open Autotask tabs next to current tab instead at the end of all tabs.
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="opt_rename" checked>
+        Renames ticket tabs with the ticket title. 
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" id="opt_pop" checked>
+        Add Autotask to list of whitelisted popups (helps with LiveLinks/external links).
+    </label>
+    
+</body>
+</html>
