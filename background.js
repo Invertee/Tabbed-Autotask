@@ -14,7 +14,7 @@ function removePopup() {
 	chrome.contentSettings[setting].clear({});
 }
 // Add Autotask url to popup whitelist
-addPopup()
+if (localStorage.popup == 'true') { addPopup() } else { removePopup() }
 
 // Gets last tab
 var preURL = []
