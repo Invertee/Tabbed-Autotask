@@ -35,7 +35,7 @@ chrome.tabs.onActivated.addListener(function(t){
 		//console.log(preURL)
 		preInd.push( tabs[0].index )
 		if (preInd.length > 6) { preInd.shift() }
-		console.log(preInd)
+		//console.log(preInd)
 		prewID.push( tabs[0].windowId )
 		if (prewID.length > 6) { prewID.shift() }
 		//console.log(prewID)
@@ -63,6 +63,12 @@ var urlString = 'https://ww4.autotask.net'
 					};
 					}
 				});
+			});
+		}
+
+		if (localStorage.rename == 'true') {
+			chrome.tabs.executeScript(null, {
+				file: 'title.js'
 			});
 		}
 	});
