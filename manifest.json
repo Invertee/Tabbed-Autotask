@@ -17,5 +17,5 @@
    "short_name": "Tabbed-Autotask",
    "homepage_url": "https://github.com/Invertee/Tabbed-Autotask",
    "permissions": [ "tabs", "webNavigation", "contentSettings", "https://*.autotask.net/*", "activeTab"],
-   "version": "0.6"
+   "version": "0.7"
 }
