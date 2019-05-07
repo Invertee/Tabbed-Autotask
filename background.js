@@ -13,14 +13,15 @@ function removePopup() {
 	console.log(' Clearing setting for '+setting);
 	chrome.contentSettings[setting].clear({});
 }
+
 // Add Autotask url to popup whitelist
 if (localStorage.popup == 'true') { addPopup() } else { removePopup() }
 
-//Gets last tab
+//Gets last tab id and window ID for positioning
 var preInd = []
 var prewID = []
 
-// Pushes url to array to make sure it works off the bat ;)
+// Pushes ids to array to make sure it works off the bat ;)
 for (var i = 0; i < 6; i++) {
 	preInd.push(1)
 	prewID.push(1)
@@ -38,51 +39,54 @@ chrome.tabs.onActivated.addListener( t => {
 	});	
 });
 
+// gets current url and sets variable if a URL is returned or not.  
 var AT = true
 chrome.tabs.onActivated.addListener( t => {
 	chrome.tabs.executeScript(null, {
-		file: 'url.js'
-	});
+		code:"window.location.href"
+	}, m => { if ( m === undefined ) {AT = false} else {AT = true} });
 })
 
 chrome.tabs.onUpdated.addListener( t => {
 	chrome.tabs.executeScript(null, {
-		file: 'url.js'
-	});
-})
+		code:"window.location.href"
+	}, m => { if ( m === undefined ) {AT = false} else {AT = true} });
 
-chrome.runtime.onMessage.addListener(m => {
-	if ( m.url.startsWith('https://ww4.autotask.net')) {AT = true} else {AT = false } 
-	//console.log(m)
+	// renames tab for ticket edits etc.
+	if (localStorage.rename == 'true') {
+		chrome.tabs.executeScript(null, {
+			file: 'title.js'
+		});
+	}
 })
-
 
 // Moves popup to end of window. 
-	chrome.windows.onCreated.addListener( w => {
-		if(w.type == "popup" ){
-			chrome.windows.get(w.id,{populate:true}, w => {
-				chrome.tabs.query({
-					active: true,
-					windowId: w.id
-				}, tabs => {
-					if (AT) {
-						if (localStorage.nextTab == 'true') {
-						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)}, () => {
-							chrome.tabs.update(w.tabs[0].id,{active:true});
-						});
-					} else {
-						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:-1},() => {
-							chrome.tabs.update(w.tabs[0].id,{active:true});
-						});
-					};
+chrome.windows.onCreated.addListener( w => {
+	if(w.type == "popup" ){
+		chrome.windows.get(w.id,{populate:true}, w => {
+			chrome.tabs.query({
+				active: true,
+				windowId: w.id
+			}, tabs => {
+				if (AT) {
+					if (localStorage.nextTab == 'true') {
+					chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)}, () => {
+						chrome.tabs.update(w.tabs[0].id,{active:true});
+					});
+				} else {
+					chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:-1},() => {
+						chrome.tabs.update(w.tabs[0].id,{active:true});
+					});
 				};
-				});
+			};
 			});
-		}
+		});
+	}
 
-		if (localStorage.rename == 'true') {
-			chrome.tabs.executeScript(null, {
-				file: 'title.js'
-			});
-		}
-	});
+	// renames tab 
+	if (localStorage.rename == 'true') {
+		chrome.tabs.executeScript(null, {
+			file: 'title.js'
+		});
+	}
+});
