@@ -3,10 +3,10 @@ function addPopup() {
 	var setting = 'popups';
 	
 	chrome.contentSettings[setting].set({
-			'primaryPattern': url,
-			'setting': 'allow'
-		  });
-  }
+		'primaryPattern': url,
+		'setting': 'allow'
+	});
+}
 
 function removePopup() {
 	var setting = 'popups';
@@ -16,23 +16,19 @@ function removePopup() {
 // Add Autotask url to popup whitelist
 if (localStorage.popup == 'true') { addPopup() } else { removePopup() }
 
-// Gets last tab
-var preURL = []
+//Gets last tab
 var preInd = []
 var prewID = []
+
 // Pushes url to array to make sure it works off the bat ;)
 for (var i = 0; i < 6; i++) {
-	preURL.push('https://ww4.autotask.net')
 	preInd.push(1)
 	prewID.push(1)
 };
 
-chrome.tabs.onActivated.addListener(function(t){
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) 
+chrome.tabs.onActivated.addListener( t => {
+	chrome.tabs.query({active: true, currentWindow: true}, tabs =>
 	{
-		preURL.push( tabs[0].url )
-		if (preURL.length > 6) { preURL.shift() }
-		//console.log(preURL)
 		preInd.push( tabs[0].index )
 		if (preInd.length > 6) { preInd.shift() }
 		//console.log(preInd)
@@ -42,26 +38,44 @@ chrome.tabs.onActivated.addListener(function(t){
 	});	
 });
 
-var urlString = 'https://ww4.autotask.net'
+var AT = true
+chrome.tabs.onActivated.addListener( t => {
+	chrome.tabs.executeScript(null, {
+		file: 'url.js'
+	});
+})
+
+chrome.tabs.onUpdated.addListener( t => {
+	chrome.tabs.executeScript(null, {
+		file: 'url.js'
+	});
+})
+
+chrome.runtime.onMessage.addListener(m => {
+	if ( m.url.startsWith('https://ww4.autotask.net')) {AT = true} else {AT = false } 
+	//console.log(m)
+})
+
+
 // Moves popup to end of window. 
-	chrome.windows.onCreated.addListener(function(w){
+	chrome.windows.onCreated.addListener( w => {
 		if(w.type == "popup" ){
-			chrome.windows.get(w.id,{populate:true},function(w){
+			chrome.windows.get(w.id,{populate:true}, w => {
 				chrome.tabs.query({
 					active: true,
 					windowId: w.id
-				}, function (tabs) {
-					if (preURL[0].startsWith(urlString) || preURL[1].startsWith(urlString) || preURL[2].startsWith(urlString) || preURL[3].startsWith(urlString) || preURL[4].startsWith(urlString) || preURL[5].startsWith(urlString)) {
+				}, tabs => {
+					if (AT) {
 						if (localStorage.nextTab == 'true') {
-						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)},function(){
+						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:(preInd[4] + 1)}, () => {
 							chrome.tabs.update(w.tabs[0].id,{active:true});
 						});
 					} else {
-						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:-1},function(){
+						chrome.tabs.move(w.tabs[0].id,{windowId:prewID[4],index:-1},() => {
 							chrome.tabs.update(w.tabs[0].id,{active:true});
 						});
 					};
-					}
+				};
 				});
 			});
 		}
@@ -72,11 +86,3 @@ var urlString = 'https://ww4.autotask.net'
 			});
 		}
 	});
-
-chrome.tabs.onUpdated.addListener( function(w) {
-	if (localStorage.rename == 'true') {
-		chrome.tabs.executeScript(null, {
-			file: 'title.js'
-		});
-	}
-})
