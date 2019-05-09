@@ -52,6 +52,19 @@ chrome.tabs.onUpdated.addListener( t => {
 		code:"window.location.href"
 	}, m => { if ( m === undefined ) {AT = false} else {AT = true} });
 
+	// If Autotask link from external source is found, move tab to main window
+	if (AT && (prewID[3] != prewID[4])) {
+		w = prewID[4]
+		chrome.tabs.query({
+			active: true,
+			windowId: w
+		}, tabs => {
+			chrome.tabs.move(tabs[0].id,{windowId:prewID[3],index:-1}, () => {
+				chrome.tabs.update(tabs[0].id,{active:true});
+			});
+		});
+	}
+
 	// renames tab for ticket edits etc.
 	if (localStorage.rename == 'true') {
 		chrome.tabs.executeScript(null, {
@@ -62,7 +75,6 @@ chrome.tabs.onUpdated.addListener( t => {
 
 // Moves popup to end of window. 
 chrome.windows.onCreated.addListener( w => {
-	if(w.type == "popup" ){
 		chrome.windows.get(w.id,{populate:true}, w => {
 			chrome.tabs.query({
 				active: true,
@@ -81,7 +93,6 @@ chrome.windows.onCreated.addListener( w => {
 			};
 			});
 		});
-	}
 
 	// renames tab 
 	if (localStorage.rename == 'true') {
